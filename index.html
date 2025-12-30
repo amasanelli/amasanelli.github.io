@@ -312,7 +312,7 @@
       }
 
       async function loadRepos() {
-        const res = await fetch("https://api.github.com/users/amasanelli/repos?sort=updated&direction=desc");
+        const res = await fetch("https://pinned.berrysauce.dev/get/amasanelli");
 
         const projects = await res.json();
 
@@ -326,7 +326,7 @@
           div.innerHTML = `
             <h3>${project.name}</h3>
             <p>${project.description || "No description available"}</p>
-            <a class="button" href="${project.html_url}" target="_blank">
+            <a class="button" href="https://github.com/amasanelli/${project.name}" target="_blank">
               View in GitHub
             </a>
           `;
