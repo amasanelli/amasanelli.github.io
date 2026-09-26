@@ -12,10 +12,10 @@
     <meta name="robots" content="index, follow" />
     <meta name="keywords" content="back-end developer, web technologies, golang, software development" />
 
-    <meta name="description" property="og:description" content="Andres Masanelli: Back-end developer focused on delivering high-performance software by keeping it stupidly simple!." />
+    <meta name="description" property="og:description" content="Andres Masanelli: Back-end developer focused on delivering high-performance software by keeping it stupidly simple!" />
     <meta name="type" property="og:type" content="website" />
-    <meta name="image" property="og:image" content="social-image.png" />
-    <meta name="url" property="og:url" content="amasanelli.github.io" />
+    <meta name="image" property="og:image" content="https://amasanelli.github.io/social-image.png" />
+    <meta name="url" property="og:url" content="https://amasanelli.github.io/" />
     <meta name="title" property="og:title" content="Andres Masanelli" />
 
     <!-- Global site tag (gtag.js) - Google Analytics -->
@@ -32,6 +32,10 @@
 
     <title>Andres Masanelli</title>
     <style>
+      html {
+        scroll-behavior: smooth;
+      }
+
       * {
         font-family: Arial, sans-serif;
         margin: 0;
@@ -125,18 +129,11 @@
       }
 
       .card p {
-        white-space: nowrap;
-        text-overflow: ellipsis;
         overflow: hidden;
-
-        @supports (-webkit-line-clamp: 2) {
-          overflow: hidden;
-          text-overflow: ellipsis;
-          white-space: initial;
-          display: -webkit-box;
-          -webkit-line-clamp: 2;
-          -webkit-box-orient: vertical;
-        }
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        line-clamp: 2;
+        -webkit-box-orient: vertical;
       }
 
       .lang {
@@ -268,20 +265,11 @@
         with
         <!-- prettier-ignore -->
         <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="black" d="m12 21.35l-1.45-1.32C5.4 15.36 2 12.27 2 8.5C2 5.41 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.08C13.09 3.81 14.76 3 16.5 3C19.58 3 22 5.41 22 8.5c0 3.77-3.4 6.86-8.55 11.53z"/></svg>
-        using vanilla Javascript, HMTL and CSS.
+        using vanilla Javascript, HTML and CSS.
       </p>
     </div>
 
     <script>
-      document.querySelectorAll("#nav a").forEach((anchor) => {
-        anchor.addEventListener("click", function (e) {
-          e.preventDefault();
-          document.querySelector(this.getAttribute("href")).scrollIntoView({
-            behavior: "smooth",
-          });
-        });
-      });
-      
       const quotes = [
         "Every new line of code is a liability — make it earn its place.",
         "The simplest solution that works is usually the right one.",
@@ -311,10 +299,7 @@
           setTimeout(() => {
             quote.textContent = "";
             c = 0;
-            q++;
-            if (q >= quotes.length) {
-              q = 0;
-            }
+            q = (q + 1) % quotes.length;
             setTimeout(type, typingSpeed);
           }, quoteTimeout);
         }
@@ -326,24 +311,25 @@
 
         const projects = await res.json();
 
-        const quote = document.getElementById("cards");
+        const cards = document.getElementById("cards");
 
-        for (let i = 0; i < projects.length; i++) {
-          const project = projects[i];
+        for (const project of projects) {
           const lang = project.primaryLanguage;
 
           const div = document.createElement("div");
           div.classList.add("card");
           div.innerHTML = `
             <h3>${project.name}</h3>
-            <p>${project.description || "No description available"}</p>
+            <p></p>
             ${lang ? `<span class="lang"><span class="lang-dot" style="background:${lang.color}"></span>${lang.name}</span>` : ""}
             <a class="button" href="${project.url}" target="_blank">
               View in GitHub
             </a>
           `;
+          // description is third-party text: set as text, never HTML
+          div.querySelector("p").textContent = project.description || "No description available";
 
-          quote.appendChild(div);
+          cards.appendChild(div);
         }
       }
 
