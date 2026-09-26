@@ -1,0 +1,28 @@
+name: Update repos
+
+on:
+  schedule:
+    - cron: "0 0 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fetch "portfolio" star list
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh api graphql -f query='{user(login:"amasanelli"){lists(first:20){nodes{slug items(first:50){nodes{... on Repository{name description url primaryLanguage{name color}}}}}}}}' \
+            --jq '.data.user.lists.nodes[] | select(.slug == "portfolio") | .items.nodes' > repos.json
+      - name: Commit if changed
+        run: |
+          git diff --quiet repos.json && exit 0
+          git config user.name "github-actions[bot]"
+          git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
+          git commit -am "Update repos.json"
+          git push
