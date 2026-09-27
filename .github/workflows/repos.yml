@@ -17,7 +17,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh api graphql -f query='{user(login:"amasanelli"){lists(first:20){nodes{slug items(first:50){nodes{... on Repository{name description url primaryLanguage{name color}}}}}}}}' \
+          gh api graphql -f query='{user(login:"amasanelli"){lists(first:20){nodes{slug items(first:50){nodes{... on Repository{name description url homepageUrl primaryLanguage{name color}}}}}}}}' \
             --jq '.data.user.lists.nodes[] | select(.slug == "portfolio") | .items.nodes' > repos.json
           test -s repos.json # list missing -> empty file; fail instead of committing it
       - name: Commit if changed
