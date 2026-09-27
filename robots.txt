@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://masanellia.com.ar/sitemap.xml
+Sitemap: https://portfolio.masanellia.com.ar/sitemap.xml
